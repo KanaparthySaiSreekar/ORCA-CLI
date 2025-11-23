@@ -1,8 +1,8 @@
 # ORCA-CLI Architecture
 
-**Version:** 1.0 (Draft)
-**Date:** 2025-11-22
-**Status:** Design Phase
+**Version:** 2.0 (Enhanced)
+**Date:** 2025-11-23 (Updated)
+**Status:** Design Phase - Enhanced with Advanced Capabilities
 
 ---
 
@@ -11,11 +11,12 @@
 1. [System Overview](#system-overview)
 2. [Architecture Principles](#architecture-principles)
 3. [Component Architecture](#component-architecture)
-4. [Data Flow](#data-flow)
-5. [Technology Decisions](#technology-decisions)
-6. [Integration Points](#integration-points)
-7. [Security Architecture](#security-architecture)
-8. [Scalability & Performance](#scalability--performance)
+4. [Enhanced Components (NEW)](#enhanced-components-new)
+5. [Data Flow](#data-flow)
+6. [Technology Decisions](#technology-decisions)
+7. [Integration Points](#integration-points)
+8. [Security Architecture](#security-architecture)
+9. [Scalability & Performance](#scalability--performance)
 
 ---
 
@@ -581,6 +582,769 @@ def is_safe_file_write(path: str) -> bool:
 - Track code source (LLM-generated vs human-written vs copied)
 - Detect code from Stack Overflow, GitHub (via similarity)
 - Maintain attribution metadata
+
+---
+
+## Enhanced Components (NEW)
+
+**Added:** 2025-11-23
+
+This section describes the advanced components added to the architecture to transform ORCA-CLI from a basic coding agent to a comprehensive AI-powered development platform.
+
+### Enhanced Architecture Layers
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│                 Enhanced Service Layer                           │
+├────────────────┬────────────────┬────────────────┬──────────────┤
+│ Code           │ Refactoring &  │ AI Testing &   │ Plan         │
+│ Intelligence   │ Quality        │ Analysis       │ Enhancement  │
+│                │                │                │              │
+│ - Call graphs  │ - Smart        │ - Test gen     │ - Learning   │
+│ - Impact       │   refactor     │ - Coverage     │ - Templates  │
+│   analysis     │ - Code review  │   gaps         │ - Parallel   │
+│ - Complexity   │ - Doc gen      │ - Mutation     │ - Predict    │
+│ - Dead code    │ - Arch smells  │ - Flaky det    │ - Context    │
+└────────────────┴────────────────┴────────────────┴──────────────┘
+```
+
+### 5. Code Intelligence Layer
+
+**Responsibility:** Deep code understanding and dependency analysis
+
+#### 5.1 Call Graph & Dependency Analyzer
+
+**Purpose:** Track and visualize code dependencies and call relationships
+
+**Components:**
+
+**Call Graph Generator:**
+```python
+@dataclass
+class CallGraph:
+    nodes: Dict[str, FunctionNode]  # function_id -> node
+    edges: List[CallEdge]  # caller -> callee relationships
+    entry_points: List[str]  # main, API endpoints, etc.
+
+class CallGraphAnalyzer:
+    def build_call_graph(self, files: List[str]) -> CallGraph:
+        """Build complete call graph from source files."""
+        pass
+
+    def find_callers(self, function_name: str) -> List[FunctionNode]:
+        """Find all functions that call the specified function."""
+        pass
+
+    def find_callees(self, function_name: str) -> List[FunctionNode]:
+        """Find all functions called by the specified function."""
+        pass
+
+    def detect_cycles(self) -> List[List[str]]:
+        """Detect circular call dependencies."""
+        pass
+```
+
+**Technology Stack:**
+- Python: `pycg`, `ast` module
+- JavaScript: `madge`, custom analysis
+- Go: `go-callvis`
+- Cross-language: Custom tree-sitter queries
+
+**Use Cases:**
+- "Show me what breaks if I change this function"
+- "Find all code paths that lead to this bug"
+- "Visualize the dependency structure"
+
+#### 5.2 Impact Analysis Engine
+
+**Purpose:** Predict consequences of code changes
+
+**Architecture:**
+```python
+@dataclass
+class ImpactAnalysis:
+    changed_files: List[str]
+    direct_impacts: List[Impact]  # Immediately affected code
+    indirect_impacts: List[Impact]  # Transitively affected
+    breaking_changes: List[BreakingChange]
+    affected_tests: List[str]
+    risk_score: float  # 0-1, probability of issues
+
+@dataclass
+class Impact:
+    file_path: str
+    affected_symbols: List[str]  # functions, classes, vars
+    impact_type: ImpactType  # SIGNATURE_CHANGE, BEHAVIOR_CHANGE, etc.
+    severity: Severity  # CRITICAL, HIGH, MEDIUM, LOW
+
+class ImpactAnalyzer:
+    def analyze_changes(self, changes: List[FileChange]) -> ImpactAnalysis:
+        """Analyze impact of proposed code changes."""
+        # 1. Build call graph
+        # 2. Identify changed symbols
+        # 3. Propagate through dependency graph
+        # 4. Classify impact severity
+        # 5. Identify affected tests
+        pass
+
+    def predict_breaking_changes(self, changes: List[FileChange]) -> List[BreakingChange]:
+        """Detect API breaking changes."""
+        # - Function signature changes
+        # - Removed public methods
+        # - Changed return types
+        # - Removed parameters
+        pass
+```
+
+**Integration with Planning:**
+```python
+# Before executing a plan step, check impact
+impact = analyzer.analyze_changes(plan_step.changes)
+if impact.risk_score > 0.7:
+    print(f"⚠️  High risk change detected!")
+    print(f"Breaking changes: {len(impact.breaking_changes)}")
+    print(f"Affected tests: {len(impact.affected_tests)}")
+    user_approval = request_approval()
+```
+
+#### 5.3 Complexity & Quality Metrics
+
+**Purpose:** Measure and track code quality
+
+**Metrics Tracked:**
+
+**Cyclomatic Complexity:**
+- Measures number of independent paths through code
+- Target: Keep functions under 10
+
+**Cognitive Complexity:**
+- Measures how hard code is to understand
+- Accounts for nesting, breaks in flow
+
+**Maintainability Index:**
+- Combined metric (0-100)
+- Considers volume, complexity, comment density
+
+**Technical Debt Ratio:**
+- Estimated time to fix vs time to build
+- Track over time
+
+**Implementation:**
+```python
+@dataclass
+class QualityMetrics:
+    cyclomatic_complexity: int
+    cognitive_complexity: int
+    maintainability_index: float
+    lines_of_code: int
+    comment_ratio: float
+    test_coverage: float
+    technical_debt_hours: float
+
+class QualityAnalyzer:
+    def analyze_file(self, file_path: str) -> QualityMetrics:
+        """Compute quality metrics for a file."""
+        pass
+
+    def analyze_function(self, function: Function) -> QualityMetrics:
+        """Compute quality metrics for a function."""
+        pass
+
+    def detect_hotspots(self, project: Project) -> List[Hotspot]:
+        """Find areas with high complexity and frequent changes."""
+        # High complexity + high churn = refactoring candidate
+        pass
+```
+
+**Tools:**
+- `radon` (Python)
+- `gocyclo` (Go)
+- `eslint-plugin-complexity` (JavaScript)
+
+**Actions Based on Metrics:**
+```python
+if metrics.cyclomatic_complexity > 10:
+    suggest_refactoring("Extract functions to reduce complexity")
+
+if metrics.cognitive_complexity > 15:
+    suggest_refactoring("Simplify logic flow, reduce nesting")
+
+if metrics.maintainability_index < 20:
+    flag_for_review("Low maintainability - consider rewrite")
+```
+
+#### 5.4 Dead Code Detection
+
+**Purpose:** Find and remove unused code
+
+**Detection Strategies:**
+
+**Unused Functions:**
+```python
+class DeadCodeDetector:
+    def find_unused_functions(self, project: Project) -> List[Function]:
+        """Find functions never called."""
+        call_graph = build_call_graph(project)
+        all_functions = find_all_functions(project)
+        called_functions = set(call_graph.nodes.keys())
+        return [f for f in all_functions if f.name not in called_functions]
+```
+
+**Unreachable Code:**
+```python
+def detect_unreachable_code(function: Function) -> List[Statement]:
+    """Find code after return/raise that can never execute."""
+    # AST analysis to find statements after unconditional returns
+    pass
+```
+
+**Unused Imports:**
+```python
+def find_unused_imports(file: File) -> List[Import]:
+    """Find imported symbols never used."""
+    imports = extract_imports(file)
+    used_symbols = extract_symbol_usage(file)
+    return [i for i in imports if i.symbol not in used_symbols]
+```
+
+**Safety:**
+- Never auto-delete without approval
+- Provide confidence scores
+- Show evidence (call graph)
+- Check for reflection/dynamic usage
+
+### 6. Refactoring & Quality Engine
+
+**Responsibility:** Intelligent code refactoring and quality improvement
+
+#### 6.1 Refactoring Operations
+
+**Supported Refactorings:**
+
+**Extract Function/Method:**
+```python
+class RefactoringEngine:
+    def extract_function(
+        self,
+        file: str,
+        start_line: int,
+        end_line: int,
+        new_function_name: str
+    ) -> RefactoringResult:
+        """Extract code block into new function."""
+        # 1. Analyze selected code
+        # 2. Identify inputs (parameters needed)
+        # 3. Identify outputs (return values)
+        # 4. Generate new function
+        # 5. Replace original with call
+        # 6. Run tests to verify equivalence
+        pass
+```
+
+**Rename Symbol:**
+```python
+def rename_symbol(
+    self,
+    old_name: str,
+    new_name: str,
+    scope: Scope = Scope.PROJECT
+) -> RefactoringResult:
+    """Rename symbol across all files."""
+    # 1. Find all occurrences
+    # 2. Update definitions
+    # 3. Update references
+    # 4. Update imports
+    # 5. Update comments/docs
+    # 6. Verify no conflicts
+    pass
+```
+
+**Inline Function:**
+```python
+def inline_function(self, function_name: str) -> RefactoringResult:
+    """Replace function calls with function body."""
+    # Only safe if: function called once, no side effects
+    pass
+```
+
+**Extract Interface/Protocol:**
+```python
+def extract_interface(
+    self,
+    class_name: str,
+    interface_name: str,
+    methods: List[str]
+) -> RefactoringResult:
+    """Extract interface from class."""
+    # 1. Create protocol/interface
+    # 2. Move method signatures
+    # 3. Update class to implement interface
+    pass
+```
+
+**Safety Guarantees:**
+- Run full test suite before refactoring
+- Run full test suite after refactoring
+- Ensure tests pass both times
+- Provide diff for review
+- Rollback on failure
+
+#### 6.2 Code Review Automation
+
+**Purpose:** AI-powered code review
+
+**Review Categories:**
+
+**Code Quality:**
+```python
+@dataclass
+class CodeReviewFinding:
+    file: str
+    line: int
+    severity: Severity
+    category: Category
+    message: str
+    suggestion: str
+    auto_fixable: bool
+
+class CodeReviewer:
+    def review_code(self, changes: List[FileChange]) -> List[CodeReviewFinding]:
+        """Perform automated code review."""
+        findings = []
+        findings.extend(self.check_naming_conventions(changes))
+        findings.extend(self.check_complexity(changes))
+        findings.extend(self.check_security(changes))
+        findings.extend(self.check_performance(changes))
+        findings.extend(self.check_best_practices(changes))
+        return findings
+```
+
+**Security Checks:**
+- SQL injection vulnerabilities
+- XSS vulnerabilities
+- Hardcoded secrets/credentials
+- Insecure randomness
+- Path traversal
+- Command injection
+
+**Performance Checks:**
+- N+1 query patterns
+- Inefficient algorithms (O(n²) when O(n) exists)
+- Memory leaks
+- Resource leaks (unclosed files, connections)
+
+**Best Practices:**
+- Missing error handling
+- Missing logging
+- Inconsistent formatting
+- Missing docstrings
+- Type hint coverage
+
+**Output Format:**
+```markdown
+## Code Review: src/api/auth.py
+
+### Critical Issues (2)
+❌ Line 45: SQL injection vulnerability
+   Current: f"SELECT * FROM users WHERE email = '{email}'"
+   Fix: Use parameterized query
+   ```python
+   cursor.execute("SELECT * FROM users WHERE email = %s", (email,))
+   ```
+
+❌ Line 78: Hardcoded API key
+   Move to environment variable
+
+### Warnings (3)
+⚠️  Line 23: Function too complex (CC: 15)
+   Suggestion: Extract validation logic to separate function
+
+⚠️  Line 56: Missing error handling
+   Add try/except for database operations
+
+⚠️  Line 92: N+1 query detected
+   Use join or batch loading
+
+### Suggestions (5)
+💡 Line 12: Consider using dataclass
+💡 Line 34: Add type hints
+💡 Line 67: Add docstring
+```
+
+#### 6.3 Documentation Generator
+
+**Purpose:** Generate comprehensive documentation from code
+
+**Documentation Types:**
+
+**Docstrings:**
+```python
+class DocGenerator:
+    def generate_docstring(self, function: Function) -> str:
+        """Generate Google-style docstring."""
+        # Analyze:
+        # - Function signature
+        # - Parameters and types
+        # - Return type
+        # - Exceptions raised
+        # - Examples from tests
+        # Use LLM to generate natural language description
+        pass
+```
+
+**Example Output:**
+```python
+def authenticate_user(username: str, password: str) -> Optional[User]:
+    """Authenticate user with username and password.
+
+    Validates user credentials against the database and returns
+    the user object if authentication succeeds.
+
+    Args:
+        username: The user's username
+        password: The user's plain-text password (will be hashed)
+
+    Returns:
+        User object if authentication succeeds, None otherwise
+
+    Raises:
+        DatabaseError: If database connection fails
+        ValidationError: If username or password is invalid format
+
+    Examples:
+        >>> user = authenticate_user("alice", "secret123")
+        >>> user.email
+        'alice@example.com'
+    """
+```
+
+**API Documentation:**
+```python
+def generate_openapi_schema(app: FastAPIApp) -> OpenAPISchema:
+    """Generate OpenAPI 3.0 schema from FastAPI application."""
+    # Extract routes, parameters, responses
+    # Generate schema JSON
+    pass
+```
+
+**Project Documentation:**
+```python
+def generate_readme(project: Project) -> str:
+    """Generate README.md from project structure."""
+    # Analyze:
+    # - Project structure
+    # - Dependencies
+    # - Entry points
+    # - Configuration
+    # Generate sections: Installation, Usage, API, etc.
+    pass
+```
+
+### 7. AI Testing & Quality Assurance
+
+**Responsibility:** Intelligent test generation and quality analysis
+
+#### 7.1 Test Generation Engine
+
+**Purpose:** Generate comprehensive test cases using AI
+
+**Capabilities:**
+
+**Unit Test Generation:**
+```python
+class TestGenerator:
+    def generate_unit_tests(self, function: Function) -> List[Test]:
+        """Generate comprehensive unit tests."""
+        # 1. Analyze function signature and implementation
+        # 2. Identify test scenarios:
+        #    - Happy path
+        #    - Edge cases (empty, null, boundary values)
+        #    - Error conditions
+        # 3. Use LLM to generate test code
+        # 4. Verify tests compile and run
+        # 5. Use mutation testing to verify quality
+        pass
+```
+
+**Example Generated Tests:**
+```python
+# Original function
+def divide(a: float, b: float) -> float:
+    if b == 0:
+        raise ValueError("Cannot divide by zero")
+    return a / b
+
+# Generated tests
+def test_divide_positive_numbers():
+    assert divide(10, 2) == 5.0
+
+def test_divide_negative_numbers():
+    assert divide(-10, 2) == -5.0
+
+def test_divide_by_zero():
+    with pytest.raises(ValueError, match="Cannot divide by zero"):
+        divide(10, 0)
+
+def test_divide_float_precision():
+    assert abs(divide(1, 3) - 0.333333) < 0.0001
+```
+
+**Integration Test Generation:**
+```python
+def generate_integration_tests(self, endpoint: APIEndpoint) -> List[Test]:
+    """Generate API integration tests."""
+    # 1. Analyze endpoint schema
+    # 2. Generate test cases:
+    #    - Valid requests
+    #    - Invalid requests (validation)
+    #    - Authentication/authorization
+    #    - Error responses
+    pass
+```
+
+#### 7.2 Coverage Gap Analysis
+
+**Purpose:** Intelligent coverage improvement
+
+**Architecture:**
+```python
+@dataclass
+class CoverageGap:
+    file: str
+    line_range: Tuple[int, int]
+    function: str
+    gap_type: GapType  # UNCOVERED, BRANCH_MISSING, EXCEPTION_PATH
+    priority: Priority  # CRITICAL, HIGH, MEDIUM, LOW
+    suggested_tests: List[str]
+
+class CoverageAnalyzer:
+    def analyze_gaps(self, coverage_report: Coverage) -> List[CoverageGap]:
+        """Find and prioritize coverage gaps."""
+        gaps = []
+
+        # Find uncovered lines
+        gaps.extend(self.find_uncovered_lines(coverage_report))
+
+        # Find missing branches
+        gaps.extend(self.find_missing_branches(coverage_report))
+
+        # Find uncovered exception paths
+        gaps.extend(self.find_uncovered_exceptions(coverage_report))
+
+        # Prioritize by:
+        # - Complexity of uncovered code
+        # - Criticality (auth, payment, etc.)
+        # - Recent changes (high churn)
+        return self.prioritize_gaps(gaps)
+```
+
+**Output:**
+```
+Coverage Gap Analysis for src/auth.py
+Overall: 72% line, 58% branch coverage
+
+Critical Gaps:
+  ❌ Lines 45-52: Password reset flow (0% coverage)
+     Priority: CRITICAL (authentication code)
+     Suggested tests:
+       - test_password_reset_valid_token()
+       - test_password_reset_expired_token()
+       - test_password_reset_invalid_token()
+
+  ⚠️  Lines 78-85: Token refresh (50% branch coverage)
+     Priority: HIGH
+     Missing branch: refresh_token_revoked scenario
+     Suggested test:
+       - test_token_refresh_with_revoked_token()
+```
+
+#### 7.3 Mutation Testing
+
+**Purpose:** Verify test quality by mutating code
+
+**Implementation:**
+```python
+class MutationTester:
+    def run_mutation_testing(self, file: str) -> MutationReport:
+        """Run mutation testing on file."""
+        # 1. Generate mutants (small code changes)
+        # 2. Run test suite against each mutant
+        # 3. Track which mutants survive (weak tests)
+        # 4. Suggest test improvements
+        pass
+```
+
+**Mutation Types:**
+- Arithmetic operators: `+` → `-`, `*` → `/`
+- Comparison operators: `>` → `>=`, `==` → `!=`
+- Boolean logic: `and` → `or`, `not` → removed
+- Return values: `return x` → `return None`
+- Delete statements
+
+**Example Output:**
+```
+Mutation Testing Results for src/calculator.py
+
+Mutants: 32 generated
+Killed: 28 (87.5%)
+Survived: 4 (12.5%)
+
+Surviving Mutants (weak tests):
+  Line 42: Changed > to >= (no test detected)
+    Suggestion: Add boundary test case
+    ```python
+    def test_threshold_boundary():
+        assert process(10) == "high"  # exactly at threshold
+        assert process(9) == "low"    # just below threshold
+    ```
+
+  Line 58: Removed error handling (no test detected)
+    Suggestion: Add error scenario test
+```
+
+### 8. Enhanced Planning & Learning
+
+**Responsibility:** Intelligent planning with learning from experience
+
+#### 8.1 Learning System
+
+**Purpose:** Learn from past executions to improve over time
+
+**Architecture:**
+```python
+@dataclass
+class PlanExecution:
+    plan_id: str
+    task_description: str
+    steps: List[PlanStep]
+    model_used: str
+    success: bool
+    execution_time: float
+    failure_reasons: List[str]
+    fixes_applied: List[str]
+    timestamp: datetime
+
+class LearningSystem:
+    def __init__(self):
+        self.execution_history: List[PlanExecution] = []
+        self.success_patterns: Dict[str, SuccessPattern] = {}
+        self.failure_patterns: Dict[str, FailurePattern] = {}
+
+    def record_execution(self, execution: PlanExecution):
+        """Record plan execution for learning."""
+        self.execution_history.append(execution)
+        self.update_patterns(execution)
+
+    def suggest_improvements(self, plan: Plan) -> List[Suggestion]:
+        """Suggest plan improvements based on history."""
+        # Check if similar plans failed before
+        # Suggest preventive measures
+        # Recommend better step ordering
+        pass
+```
+
+**Pattern Recognition:**
+```python
+# Example learned patterns
+{
+    "add_api_endpoint": {
+        "success_rate": 0.85,
+        "avg_time": 180,  # seconds
+        "best_approach": {
+            "order": ["create_schema", "create_route", "write_tests", "update_docs"],
+            "common_pitfalls": ["forgetting_import", "missing_dependency"]
+        }
+    }
+}
+```
+
+#### 8.2 Plan Templates
+
+**Purpose:** Reusable plan patterns for common tasks
+
+**Template System:**
+```python
+@dataclass
+class PlanTemplate:
+    name: str
+    description: str
+    variables: List[TemplateVariable]
+    steps: List[PlanStepTemplate]
+    prerequisites: List[str]
+    estimated_time: int  # seconds
+
+class TemplateEngine:
+    def instantiate_template(
+        self,
+        template_name: str,
+        variables: Dict[str, Any]
+    ) -> Plan:
+        """Create plan from template with variable substitution."""
+        pass
+```
+
+**Built-in Templates:**
+- `add-api-endpoint`
+- `add-database-model`
+- `refactor-extract-function`
+- `add-authentication`
+- `setup-ci-cd`
+- `migrate-database`
+
+**Usage:**
+```bash
+$ orca plan template add-api-endpoint \
+    --path=/users/{id} \
+    --method=GET \
+    --model=User
+
+Generated plan from template:
+  1. Create Pydantic schema (UserResponse)
+  2. Create route handler (get_user)
+  3. Add database query
+  4. Write unit tests
+  5. Write integration tests
+  6. Update OpenAPI schema
+```
+
+#### 8.3 Parallel Execution
+
+**Purpose:** Execute independent steps concurrently
+
+**Implementation:**
+```python
+class ParallelExecutor:
+    def build_dependency_dag(self, plan: Plan) -> DAG:
+        """Build directed acyclic graph of step dependencies."""
+        pass
+
+    def identify_parallel_groups(self, dag: DAG) -> List[List[PlanStep]]:
+        """Group steps that can run in parallel."""
+        # Use topological sort to identify levels
+        # Steps at same level can run in parallel
+        pass
+
+    async def execute_parallel(self, plan: Plan) -> ExecutionResult:
+        """Execute plan with parallelism."""
+        dag = self.build_dependency_dag(plan)
+        groups = self.identify_parallel_groups(dag)
+
+        for group in groups:
+            # Execute all steps in group concurrently
+            tasks = [self.execute_step(step) for step in group]
+            results = await asyncio.gather(*tasks)
+
+            # Check for failures
+            if any(not r.success for r in results):
+                return self.handle_failure(results)
+
+        return ExecutionResult(success=True)
+```
+
+**Benefits:**
+- 2-5x faster for complex plans
+- Better resource utilization
+- Visual feedback on parallelism
 
 ---
 
