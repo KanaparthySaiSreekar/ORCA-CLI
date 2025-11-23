@@ -1,8 +1,22 @@
 # ORCA-CLI Implementation Plan
 
-**Version:** 1.0
-**Date:** 2025-11-22
-**Status:** Planning Phase
+**Version:** 2.0
+**Date:** 2025-11-23
+**Status:** Planning Phase - Research-Driven Architecture
+
+---
+
+## ⚠️ CRITICAL: Agent Architecture First
+
+**Research Finding (2025-11-23):** The effectiveness of a coding agent is primarily determined by its **architecture**, **tool design**, and **agent loop** rather than the LLM alone.
+
+**Evidence:**
+- SWE-agent achieved **12.5%** on SWE-bench (vs 3.8% previous SOTA) through Agent-Computer Interface (ACI) design, **not model improvements**
+- ReAct pattern achieves **86%** success rate with proper implementation
+- Aider handles enterprise codebases (2000+ files) through AST-based repository mapping
+- Tool design has more impact than model selection
+
+**👉 See [AGENT_ARCHITECTURE_RESEARCH.md](./AGENT_ARCHITECTURE_RESEARCH.md) for comprehensive research findings.**
 
 ---
 
@@ -12,6 +26,13 @@ This document outlines the complete implementation plan for ORCA-CLI, an OpenRou
 
 **Estimated Total Effort:** 8-12 months (with team of 2-3 developers)
 **Current Phase:** Phase 0 - Research & Foundation
+
+**Architecture Philosophy (Updated 2025-11-23):**
+1. **Agent-First Design**: Tools and architecture designed specifically for LLM agents
+2. **Hybrid Architecture**: Deterministic core + non-deterministic reasoning
+3. **Compact Interfaces**: Token-efficient tool design (SWE-agent principle)
+4. **Context Intelligence**: Just-in-time loading with repository mapping
+5. **Self-Correction Loops**: Built-in error recovery and iteration
 
 ### Major Enhancements (Version 2.0 - 2025-11-23)
 
@@ -151,21 +172,33 @@ This plan has been significantly enhanced with advanced capabilities based on co
 
 #### WS-01: Project Setup & Infrastructure
 
+**Updated (2025-11-23):** Phase 0 research must prioritize **Agent-Computer Interface (ACI) design** based on SWE-agent findings.
+
 | ID | Task | Status | Priority | Dependencies | Estimate |
 |---|---|---|---|---|---|
-| INFRA-001 | Research similar CLI coding agents (Cursor, Aider, etc.) | PENDING | P0 | - | 2d |
+| **INFRA-001** | **Research coding agent architectures (ReAct, Plan-and-Execute, ReWOO)** | ✅ COMPLETE | P0 | - | 2d |
+| **INFRA-001a** | **Research Agent-Computer Interface (ACI) design patterns** | ✅ COMPLETE | P0 | INFRA-001 | 1d |
+| **INFRA-001b** | **Research tool design principles for LLM agents** | ✅ COMPLETE | P0 | INFRA-001 | 1d |
 | INFRA-002 | Research OpenRouter API capabilities and patterns | PENDING | P0 | - | 1d |
 | INFRA-003 | Research AST parsing libraries (tree-sitter, ast) | PENDING | P0 | - | 2d |
+| **INFRA-003a** | **Research repository mapping strategies (Aider approach)** | PENDING | P0 | INFRA-003 | 1d |
 | INFRA-004 | Research sandbox technologies (Docker, firejail, bubblewrap, gVisor) | PENDING | P0 | - | 2d |
 | INFRA-005 | Research vector databases (ChromaDB, FAISS, Weaviate, Qdrant) | PENDING | P0 | - | 1d |
 | INFRA-006 | Research code embedding models (CodeBERT, GraphCodeBERT) | PENDING | P0 | - | 1d |
-| INFRA-007 | Define project structure and architecture | PENDING | P0 | INFRA-001 to 006 | 2d |
+| **INFRA-006a** | **Design custom ACI optimized for coding tasks** | PENDING | P0 | INFRA-001a, INFRA-003a | 2d |
+| INFRA-007 | Define project structure and architecture | PENDING | P0 | INFRA-001 to 006a | 2d |
 | INFRA-008 | Create Python package structure (pyproject.toml, setup.py) | PENDING | P0 | INFRA-007 | 1d |
 | INFRA-009 | Setup dev environment (pytest, black, mypy, ruff) | PENDING | P0 | INFRA-008 | 1d |
 | INFRA-010 | Create project config files (.gitignore, .editorconfig) | PENDING | P0 | INFRA-008 | 0.5d |
 | INFRA-011 | Setup pre-commit hooks | PENDING | P1 | INFRA-009 | 0.5d |
 
-**Total Estimate:** 2 weeks
+**Total Estimate:** 2.5 weeks
+
+**Key Deliverables:**
+- ✅ [AGENT_ARCHITECTURE_RESEARCH.md](./AGENT_ARCHITECTURE_RESEARCH.md) - Comprehensive research on agent patterns
+- 📋 Custom ACI design document
+- 📋 Repository mapping implementation plan
+- 📋 Tool specifications for Phase 1
 
 ---
 
@@ -201,9 +234,14 @@ This plan has been significantly enhanced with advanced capabilities based on co
 
 #### WS-04: Agent Core (Planner + Executor)
 
+**Updated (2025-11-23):** Implement **hybrid Plan-and-Execute + ReAct** architecture based on research findings.
+
 | ID | Task | Status | Priority | Dependencies | Estimate |
 |---|---|---|---|---|---|
 | AGENT-001 | Design planning schema (Plan, Step, Action, Verification) | PENDING | P0 | - | 2d |
+| **AGENT-001a** | **Implement Plan-and-Execute pattern for well-defined tasks** | PENDING | P0 | AGENT-001 | 3d |
+| **AGENT-001b** | **Implement ReAct pattern for exploratory tasks** | PENDING | P0 | AGENT-001 | 3d |
+| **AGENT-001c** | **Add task classification (well-defined vs exploratory)** | PENDING | P0 | AGENT-001a, AGENT-001b | 1d |
 | AGENT-002 | Implement 'orca plan' command | PENDING | P0 | CLI-001, OR-007 | 3d |
 | AGENT-003 | Create plan parser (LLM output → structured plan) | PENDING | P0 | AGENT-001, OR-001 | 3d |
 | AGENT-004 | Implement plan storage and versioning (.orca/plan.json) | PENDING | P0 | AGENT-001 | 2d |
@@ -211,25 +249,62 @@ This plan has been significantly enhanced with advanced capabilities based on co
 | AGENT-006 | Implement 'orca exec' command | PENDING | P0 | AGENT-005 | 2d |
 | AGENT-007 | Add approval gate mechanism (--approve vs --auto) | PENDING | P1 | AGENT-006 | 1d |
 | AGENT-008 | Implement plan rollback on failure | PENDING | P1 | AGENT-006 | 2d |
-| AGENT-009 | Create autonomous iteration loop (execute → observe → fix) | PENDING | P0 | AGENT-006 | 3d |
+| **AGENT-009** | **Create self-correction loop (detect → reflect → retry)** | PENDING | P0 | AGENT-006 | 4d |
+| **AGENT-009a** | **Add error categorization and analysis** | PENDING | P0 | AGENT-009 | 2d |
 | AGENT-010 | Implement failure pattern detection | PENDING | P1 | AGENT-009 | 2d |
-| AGENT-011 | Add escalating retry strategy | PENDING | P1 | AGENT-010 | 1d |
+| AGENT-011 | Add escalating retry strategy (max 3 retries) | PENDING | P1 | AGENT-010 | 1d |
+| **AGENT-012** | **Implement max_iterations safety limit for loops** | PENDING | P0 | AGENT-009 | 0.5d |
 
-**Total Estimate:** 3 weeks
+**Total Estimate:** 4.5 weeks
+
+**Research References:**
+- Plan-and-Execute achieves better results for complex multi-step tasks
+- ReAct provides 86% success rate for exploratory tasks
+- Self-correction loops recover from 70%+ of initial failures
+- Always enforce max_iterations limit to prevent infinite loops
+
+**Implementation Notes:**
+- Separate deterministic orchestration from non-deterministic reasoning
+- Use LLM for planning and code generation; deterministic for validation and execution
+- Implement proper error categorization for effective self-correction
 
 #### WS-05: Multi-File Editing Layer
+
+**Updated (2025-11-23):** Implement **ACI-optimized editing tools** based on SWE-agent research (12.5% performance gain).
 
 | ID | Task | Status | Priority | Dependencies | Estimate |
 |---|---|---|---|---|---|
 | EDIT-001 | Integrate tree-sitter for AST parsing | PENDING | P0 | INFRA-003 | 2d |
+| **EDIT-001a** | **Build repository mapper (AST-based, Aider approach)** | PENDING | P0 | EDIT-001 | 3d |
 | EDIT-002 | Create language-specific parsers (Python, JS/TS, Go) | PENDING | P0 | EDIT-001 | 3d |
-| EDIT-003 | Implement AST-based code editing with validation | PENDING | P0 | EDIT-002 | 4d |
+| **EDIT-003** | **Implement line-based editing (NOT full-file replacement)** | PENDING | P0 | EDIT-002 | 4d |
+| **EDIT-003a** | **Add edit operations: replace_lines, insert_lines, delete_lines** | PENDING | P0 | EDIT-003 | 2d |
+| **EDIT-003b** | **Implement compact file viewer with line numbers** | PENDING | P0 | EDIT-002 | 2d |
 | EDIT-004 | Create diff generation and visualization | PENDING | P0 | EDIT-003 | 2d |
 | EDIT-005 | Implement multi-file atomic edit operations | PENDING | P0 | EDIT-003 | 3d |
+| **EDIT-005a** | **Add automatic backup/restore on edit failure** | PENDING | P0 | EDIT-005 | 1d |
 | EDIT-006 | Add dependency-aware editing (imports/usage tracking) | PENDING | P1 | EDIT-002 | 3d |
 | EDIT-007 | Create undo/redo mechanism | PENDING | P1 | EDIT-005 | 2d |
+| **EDIT-008** | **Implement syntax validation before file write** | PENDING | P0 | EDIT-003 | 1d |
 
-**Total Estimate:** 2.5 weeks
+**Total Estimate:** 3.5 weeks
+
+**Research References:**
+- SWE-agent: "Compact, efficient file editing is critical to performance"
+- Line-based editing reduces token usage by 80%+ vs full-file replacement
+- Repository mapping enables context-aware editing without loading all files
+
+**ACI Design Principles:**
+- ✅ Self-contained: Each tool validates inputs and handles errors
+- ✅ Robust: Automatic backup/recovery on failure
+- ✅ Clear: Descriptive output with line numbers and diffs
+- ✅ Structured: Return dataclasses, not strings
+- ✅ Compact: Minimal token usage in tool output
+
+**Tool Specifications:**
+1. `edit_file(path, operation, start_line, end_line, new_content)` - Surgical edits
+2. `view_file(path, start_line, num_lines)` - Compact file viewer
+3. `search_code(query, search_type)` - Semantic, regex, or symbol search
 
 #### WS-06: Sandbox Execution Environment
 
@@ -254,19 +329,52 @@ This plan has been significantly enhanced with advanced capabilities based on co
 
 #### WS-07: Retrieval & RAG System
 
+**Updated (2025-11-23):** Implement **just-in-time context management** with hierarchical loading (Aider approach).
+
 | ID | Task | Status | Priority | Dependencies | Estimate |
 |---|---|---|---|---|---|
+| **RAG-000** | **Implement repository map (always in context, ~1-2K tokens)** | PENDING | P0 | EDIT-001a | 2d |
 | RAG-001 | Integrate vector database (ChromaDB recommended) | PENDING | P1 | INFRA-005 | 2d |
 | RAG-002 | Implement code embedding generation (CodeBERT) | PENDING | P1 | INFRA-006 | 3d |
 | RAG-003 | Create workspace indexer (files, deps, configs) | PENDING | P1 | RAG-001, RAG-002 | 3d |
 | RAG-004 | Implement incremental indexing on file changes | PENDING | P1 | RAG-003 | 2d |
+| **RAG-004a** | **Implement just-in-time context loading (load on demand)** | PENDING | P0 | RAG-000 | 3d |
 | RAG-005 | Add vector search with relevance scoring | PENDING | P1 | RAG-003 | 2d |
+| **RAG-005a** | **Implement multi-factor relevance scoring (keywords + semantic + recency)** | PENDING | P1 | RAG-005 | 2d |
 | RAG-006 | Implement symbol search (ctags/tree-sitter) | PENDING | P1 | EDIT-001 | 2d |
 | RAG-007 | Add regex search with ripgrep | PENDING | P1 | - | 1d |
 | RAG-008 | Create context window management and chunking | PENDING | P1 | OR-001 | 3d |
+| **RAG-008a** | **Implement context cleanup (clear after task completion)** | PENDING | P1 | RAG-008 | 1d |
 | RAG-009 | Implement file ranking by task relevance | PENDING | P1 | RAG-005 | 2d |
+| **RAG-010** | **Implement hierarchical context (map → summaries → full content)** | PENDING | P0 | RAG-000, RAG-004a | 2d |
 
-**Total Estimate:** 3 weeks
+**Total Estimate:** 4 weeks
+
+**Research References:**
+- Aider handles 2000+ file codebases through AST-based repository mapping
+- Just-in-time context reduces token usage by 90%+ vs loading all files
+- Repository map (~1-2K tokens) provides structural awareness
+
+**Context Management Strategy:**
+```
+Level 1: Repository Map (always in context)
+  - File structure, symbols, dependencies
+  - ~1-2K tokens for entire project
+
+Level 2: File Summaries (loaded for relevant files)
+  - Purpose, public API, key abstractions
+  - ~500 tokens per file
+
+Level 3: Full Content (loaded when editing)
+  - Complete source code
+  - ~500-5000 tokens per file
+```
+
+**Key Principles:**
+- Maintain lightweight identifiers, not full content
+- Load context dynamically based on task
+- Prioritize by relevance (keywords, semantic, recency, size)
+- Clear context between unrelated tasks
 
 #### WS-08: Test Runner Integration
 
