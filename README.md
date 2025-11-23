@@ -58,10 +58,12 @@ ORCA-CLI is your **local engineering co-worker** that lives in the terminal. It 
 
 ## 📖 Documentation
 
-- **[IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)** - Detailed roadmap with 110+ tasks across 13 work streams
+- **[AGENT_ARCHITECTURE_RESEARCH.md](./AGENT_ARCHITECTURE_RESEARCH.md)** - 🔥 **NEW:** Comprehensive research on coding agent patterns, tool design, and best practices
+- **[IMPLEMENTATION_PLAN.md](./IMPLEMENTATION_PLAN.md)** - Detailed roadmap with 180+ tasks across 20 work streams (Updated 2025-11-23)
 - **[ARCHITECTURE.md](./ARCHITECTURE.md)** - System design, components, and data flow
 - **[TECH_RESEARCH.md](./TECH_RESEARCH.md)** - Technology evaluation and selection criteria
 - **[PROJECT_KICKOFF.md](./PROJECT_KICKOFF.md)** - Team onboarding and development workflow
+- **[AGENT_IMPROVEMENTS.md](./AGENT_IMPROVEMENTS.md)** - Advanced capabilities and enhancement proposals
 
 ---
 
