@@ -8,10 +8,25 @@
 
 ## Executive Summary
 
-This document outlines the complete implementation plan for ORCA-CLI, an OpenRouter-Compatible Agentic Coding Assistant. The project is divided into 4 major phases with 13 work streams and approximately 110+ distinct tasks.
+This document outlines the complete implementation plan for ORCA-CLI, an OpenRouter-Compatible Agentic Coding Assistant. The project is divided into 4 major phases with **20 work streams** and approximately **180+ distinct tasks** (including enhancements).
 
-**Estimated Total Effort:** 6-8 months (with team of 2-3 developers)
+**Estimated Total Effort:** 8-12 months (with team of 2-3 developers)
 **Current Phase:** Phase 0 - Research & Foundation
+
+### Major Enhancements (Version 2.0 - 2025-11-23)
+
+This plan has been significantly enhanced with advanced capabilities based on comprehensive analysis of modern coding agent requirements:
+
+**New Capabilities Added:**
+- ✅ **Advanced Code Intelligence** - Call graphs, impact analysis, complexity metrics, dead code detection
+- ✅ **Enhanced Planning** - Learning system, plan templates, parallel execution, predictive estimation
+- ✅ **AI-Powered Testing** - Test generation, coverage gap analysis, mutation testing, flaky test detection
+- ✅ **Intelligent Refactoring** - Pattern-based refactoring, code review automation, documentation generation
+- ✅ **Developer Experience** - Interactive debugging, enhanced errors, plan visualization, IDE integration
+- ✅ **Cloud & Infrastructure** - IaC generation, deployment automation, database migrations, API contracts
+- ✅ **Enterprise Features** - Team collaboration, governance, multi-repo support
+
+**See [AGENT_IMPROVEMENTS.md](./AGENT_IMPROVEMENTS.md) for detailed analysis and specifications.**
 
 ---
 
@@ -90,6 +105,8 @@ This document outlines the complete implementation plan for ORCA-CLI, an OpenRou
 
 ## Work Streams
 
+### Core Work Streams (Original)
+
 | ID | Work Stream | Phase | Priority | Owner |
 |---|---|---|---|---|
 | WS-01 | Project Setup & Infrastructure | 0 | P0 | TBD |
@@ -106,11 +123,25 @@ This document outlines the complete implementation plan for ORCA-CLI, an OpenRou
 | WS-12 | Observability & Logging | 3 | P2 | TBD |
 | WS-13 | Safety & Security | 3 | P2 | TBD |
 
+### Enhanced Work Streams (New - See AGENT_IMPROVEMENTS.md)
+
+| ID | Work Stream | Phase | Priority | Owner |
+|---|---|---|---|---|
+| WS-14 | Advanced Code Intelligence | 2 | P1 | TBD |
+| WS-15 | Enhanced Planning & Learning | 2 | P1 | TBD |
+| WS-16 | AI-Powered Testing | 2 | P1 | TBD |
+| WS-17 | Refactoring & Code Quality | 2-3 | P1 | TBD |
+| WS-18 | Developer Experience | 3 | P1 | TBD |
+| WS-19 | Cloud & Infrastructure | 3-4 | P2 | TBD |
+| WS-20 | Enterprise Features | 4 | P3 | TBD |
+
 **Priority Levels:**
 - **P0:** Critical path, blocks other work
 - **P1:** High priority, core functionality
 - **P2:** Important but not blocking
 - **P3:** Nice to have
+
+**Note:** See [AGENT_IMPROVEMENTS.md](./AGENT_IMPROVEMENTS.md) for detailed breakdown of new work streams WS-14 through WS-20.
 
 ---
 
@@ -293,6 +324,59 @@ This document outlines the complete implementation plan for ORCA-CLI, an OpenRou
 
 **Phase 2 Total:** ~10 weeks (with parallel work streams)
 
+#### WS-14: Advanced Code Intelligence (NEW)
+
+| ID | Task | Status | Priority | Dependencies | Estimate |
+|---|---|---|---|---|---|
+| CODE-001 | Implement call graph generator (pycg, madge) | PENDING | P1 | EDIT-002 | 3d |
+| CODE-002 | Build impact analysis engine | PENDING | P1 | CODE-001 | 4d |
+| CODE-003 | Integrate complexity metrics (radon, gocyclo) | PENDING | P1 | EDIT-002 | 2d |
+| CODE-004 | Add dead code detection | PENDING | P2 | CODE-001 | 2d |
+| CODE-005 | Implement code clone detection | PENDING | P2 | RAG-002 | 3d |
+| CODE-006 | Create dependency graph visualizer | PENDING | P1 | CODE-001 | 2d |
+
+**Total Estimate:** 2 weeks
+
+#### WS-15: Enhanced Planning & Learning (NEW)
+
+| ID | Task | Status | Priority | Dependencies | Estimate |
+|---|---|---|---|---|---|
+| PLAN-001 | Build learning system (plan execution history DB) | PENDING | P1 | STATE-002 | 5d |
+| PLAN-002 | Create plan template system | PENDING | P1 | AGENT-004 | 3d |
+| PLAN-003 | Implement parallel execution engine | PENDING | P1 | AGENT-006 | 4d |
+| PLAN-004 | Add predictive time/cost estimation | PENDING | P2 | PLAN-001, OBS-005 | 3d |
+| PLAN-005 | Enhance context enrichment in belief store | PENDING | P1 | STATE-003, RAG-003 | 3d |
+| PLAN-006 | Add plan visualization (ASCII/Mermaid) | PENDING | P1 | AGENT-004 | 2d |
+
+**Total Estimate:** 3 weeks
+
+#### WS-16: AI-Powered Testing (NEW)
+
+| ID | Task | Status | Priority | Dependencies | Estimate |
+|---|---|---|---|---|---|
+| AITEST-001 | Build intelligent test generation engine | PENDING | P1 | EDIT-002, OR-001 | 5d |
+| AITEST-002 | Implement coverage gap analysis | PENDING | P1 | TEST-006 | 3d |
+| AITEST-003 | Integrate mutation testing (mutmut, Stryker) | PENDING | P2 | TEST-006 | 3d |
+| AITEST-004 | Add flaky test detection | PENDING | P2 | TEST-006 | 2d |
+| AITEST-005 | Build test performance optimizer | PENDING | P2 | TEST-006 | 2d |
+| AITEST-006 | Add property-based testing support | PENDING | P2 | AITEST-001 | 3d |
+
+**Total Estimate:** 2.5 weeks
+
+#### WS-17: Refactoring & Code Quality (NEW)
+
+| ID | Task | Status | Priority | Dependencies | Estimate |
+|---|---|---|---|---|---|
+| REFACTOR-001 | Build intelligent refactoring engine (extract, rename, inline) | PENDING | P1 | EDIT-003, CODE-001 | 5d |
+| REFACTOR-002 | Implement automated code review system | PENDING | P1 | CODE-003, OR-001 | 4d |
+| REFACTOR-003 | Add documentation generation (docstrings, API docs) | PENDING | P1 | EDIT-002 | 3d |
+| REFACTOR-004 | Build architecture smell detection | PENDING | P2 | CODE-001, CODE-003 | 4d |
+| REFACTOR-005 | Add SOLID principles violation detection | PENDING | P2 | CODE-001 | 3d |
+
+**Total Estimate:** 2.5 weeks
+
+**Phase 2 Enhanced Total:** ~20 weeks (with parallel work streams and new features)
+
 ---
 
 ### Phase 3: Production Ready
@@ -345,7 +429,33 @@ This document outlines the complete implementation plan for ORCA-CLI, an OpenRou
 
 **Total Estimate:** 6 weeks
 
-**Phase 3 Total:** ~10 weeks
+#### WS-18: Developer Experience (NEW)
+
+| ID | Task | Status | Priority | Dependencies | Estimate |
+|---|---|---|---|---|---|
+| DX-001 | Integrate debugger support (pdb, ipdb integration) | PENDING | P2 | SANDBOX-006 | 4d |
+| DX-002 | Enhance error messages with AI-powered suggestions | PENDING | P1 | OR-001, AGENT-009 | 2d |
+| DX-003 | Improve plan visualization (web UI) | PENDING | P1 | PLAN-006 | 3d |
+| DX-004 | Create VS Code extension | PENDING | P2 | CLI-001, AGENT-006 | 5d |
+| DX-005 | Build web dashboard for monitoring | PENDING | P2 | OBS-001 to OBS-006 | 7d |
+| DX-006 | Add interactive debugging with AI assistance | PENDING | P2 | DX-001, OR-001 | 3d |
+
+**Total Estimate:** 3 weeks
+
+#### WS-19: Cloud & Infrastructure (NEW)
+
+| ID | Task | Status | Priority | Dependencies | Estimate |
+|---|---|---|---|---|---|
+| CLOUD-001 | Implement IaC generation (Terraform, CloudFormation) | PENDING | P2 | EDIT-003 | 5d |
+| CLOUD-002 | Add cloud deployment automation (AWS, GCP, Azure) | PENDING | P2 | SANDBOX-006 | 5d |
+| CLOUD-003 | Build database migration management | PENDING | P1 | EDIT-003, TEST-006 | 4d |
+| CLOUD-004 | Implement API contract management (OpenAPI, GraphQL) | PENDING | P2 | REFACTOR-003 | 4d |
+| CLOUD-005 | Add Kubernetes manifest generation | PENDING | P2 | CLOUD-001 | 3d |
+| CLOUD-006 | Build CI/CD pipeline templates | PENDING | P1 | PHASE3-003 | 3d |
+
+**Total Estimate:** 3 weeks
+
+**Phase 3 Enhanced Total:** ~16 weeks (with new features)
 
 ---
 
@@ -427,6 +537,21 @@ These can be developed concurrently by different team members:
 | Embeddings | CodeBERT vs GraphCodeBERT vs StarCoder | Code understanding quality, speed |
 | Config Format | TOML vs YAML vs JSON | Human readability, validation support |
 
+### Additional Technologies (Phase 2+)
+
+| Component | Technology | Purpose | Phase |
+|---|---|---|---|
+| **Call Graph Analysis** | pycg, madge | Dependency tracking | 2 |
+| **Complexity Metrics** | radon, gocyclo | Code quality | 2 |
+| **Refactoring** | rope, jscodeshift | AST transformations | 2 |
+| **Mutation Testing** | mutmut, Stryker | Test quality | 2 |
+| **Documentation** | pdoc, Sphinx, swagger-jsdoc | Auto-doc generation | 2-3 |
+| **Debugging** | pdb, ipdb, node-inspect | Debug integration | 3 |
+| **Visualization** | graphviz, mermaid | Plan/dependency viz | 2-3 |
+| **IaC** | terraform, pulumi | Infrastructure | 3 |
+| **Contract Testing** | pact, dredd | API contracts | 3 |
+| **Code Review** | pylint-plugin-patterns, custom | Pattern detection | 2 |
+
 ---
 
 ## Success Criteria
@@ -444,6 +569,7 @@ These can be developed concurrently by different team members:
 
 ### Phase 2 (Advanced Features) Exit Criteria
 
+**Core Features:**
 - [ ] RAG indexing and retrieval working
 - [ ] Test runner integration for 4+ frameworks
 - [ ] Verification engine with syntax, type, and test checks
@@ -452,8 +578,20 @@ These can be developed concurrently by different team members:
 - [ ] Test coverage 80%+
 - [ ] User guide and tutorials
 
+**Enhanced Features (NEW):**
+- [ ] Call graph analysis functional
+- [ ] Impact analysis for code changes
+- [ ] Complexity metrics integrated
+- [ ] Test generation working for Python & JavaScript
+- [ ] Coverage gap analysis reporting
+- [ ] Plan templates for common tasks
+- [ ] Learning system tracking plan success/failure
+- [ ] Code review automation functional
+- [ ] Documentation generation working
+
 ### Phase 3 (Production Ready) Exit Criteria
 
+**Core Features:**
 - [ ] Full observability and monitoring
 - [ ] Security features (command blocking, file protection)
 - [ ] CI integration templates
@@ -463,6 +601,17 @@ These can be developed concurrently by different team members:
 - [ ] PyPI package published
 - [ ] Homebrew formula available
 - [ ] Test coverage 85%+
+
+**Enhanced Features (NEW):**
+- [ ] Intelligent refactoring engine operational
+- [ ] Architecture smell detection
+- [ ] AI-powered error messages
+- [ ] Plan visualization (web + terminal)
+- [ ] Mutation testing integrated
+- [ ] Flaky test detection
+- [ ] Database migration management
+- [ ] API contract management (OpenAPI)
+- [ ] Debugger integration
 
 ### Overall Success Metrics (from PRD)
 
